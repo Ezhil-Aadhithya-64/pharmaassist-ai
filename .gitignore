@@ -1,0 +1,240 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# PharmaAssist AI - .gitignore
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ── Virtual Environments ──────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# ── Environment Variables & Secrets ───────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+secrets.json
+credentials.json
+
+# ── IDE & Editors ─────────────────────────────────────────────────────────────
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm / IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ── Operating System ──────────────────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# ── Database & Vector Stores ──────────────────────────────────────────────────
+# ChromaDB
+chroma_db/
+*.chroma
+chroma_data/
+
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+
+# PostgreSQL
+*.pgsql
+
+# ── Logs & Temporary Files ────────────────────────────────────────────────────
+*.log
+logs/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.cache
+
+# ── Testing & Coverage ────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# ── Jupyter Notebooks ─────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+!docs/**/*.ipynb
+!examples/**/*.ipynb
+
+# ── Streamlit ─────────────────────────────────────────────────────────────────
+.streamlit/
+.streamlit/secrets.toml
+
+# ── Node.js / Frontend ────────────────────────────────────────────────────────
+# Dependencies
+node_modules/
+jspm_packages/
+bower_components/
+
+# Production builds
+/frontend/.next/
+/frontend/out/
+/frontend/build/
+/frontend/dist/
+
+# Testing
+/frontend/coverage/
+
+# Misc
+.npm
+.eslintcache
+.node_repl_history
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Package Managers ──────────────────────────────────────────────────────────
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.pnpm-debug.log*
+
+# ── Documentation (Internal) ──────────────────────────────────────────────────
+# Keep only essential docs, ignore internal notes
+*_SUMMARY.md
+*_REPORT.md
+*_FIXES*.md
+*_CHECKLIST.md
+*_CHANGES.md
+*_ANALYSIS.md
+*_VALIDATION.md
+NOTES.md
+TODO.md
+INTERNAL*.md
+
+# ── AI & ML Models ────────────────────────────────────────────────────────────
+# Model files (if not using HuggingFace cache)
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.pkl
+*.pickle
+models/
+checkpoints/
+
+# Embeddings cache (except for production)
+embeddings_cache/
+.cache/
+
+# ── Deployment & Cloud ────────────────────────────────────────────────────────
+# Railway
+.railway/
+
+# Docker
+*.dockerignore
+docker-compose.override.yml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# ── Data Files ────────────────────────────────────────────────────────────────
+# Large data files (keep sample CSVs in data/)
+*.csv.bak
+*.parquet
+*.feather
+data/raw/
+data/processed/
+data/temp/
+
+# Uploaded files
+uploads/
+tmp/
+
+# ── Monitoring & Profiling ────────────────────────────────────────────────────
+.profiling/
+*.prof
+*.lprof
+
+# ── Miscellaneous ─────────────────────────────────────────────────────────────
+*.pid
+*.seed
+*.pid.lock
+.sass-cache/
+.grunt/
+.lock-wscript
+lib-cov/
+
+# ── Keep These Files ──────────────────────────────────────────────────────────
+# Explicitly keep example files
+!.env.example
+!frontend/.env.local.example
+!docker-compose.yml
+!Dockerfile
+
+# Keep essential data samples
+!data/*.csv
+!data/README.md
+
+# Keep documentation
+!README.md
+!CONTRIBUTING.md
+!LICENSE
+!docs/

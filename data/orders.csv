@@ -1,0 +1,73 @@
+order_id,customer_id,product_details,amount,order_status,ordered_date,tracking_id,expected_delivery,actual_delivery
+ORD00037,XL0029,"[{""product_name"": ""Metformin 500mg"", ""quantity"": 3}]",473.82,delivered,2026-03-23,TRK207786,2026-03-25,2026-03-23
+ORD00049,XL0029,"[{""product_name"": ""Clotrimazole Cream 15g"", ""quantity"": 3}, {""product_name"": ""Otomize Ear Spray"", ""quantity"": 2}]",1000.81,delivered,2026-03-23,TRK197923,2026-03-26,2026-03-23
+ORD00038,SE0012,"[{""product_name"": ""Vitamin D3 60K IU"", ""quantity"": 1}]",115.74,delivered,2026-03-22,TRK532322,2026-03-27,2026-03-23
+ORD00050,EN0027,"[{""product_name"": ""Calcium + D3 Tablets"", ""quantity"": 1}]",169.96,pending,2026-03-21,TRK125611,2026-03-25,
+ORD00053,AH0001,"[{""product_name"": ""Multivitamin Tablets"", ""quantity"": 3}]",273.87,delivered,2026-03-21,TRK643118,2026-03-23,2026-03-23
+ORD00025,BJ0019,"[{""product_name"": ""Aspirin 75mg"", ""quantity"": 3}]",263.28,shipped,2026-03-20,TRK599948,2026-03-23,
+ORD00019,RV0013,"[{""product_name"": ""Calcium + D3 Tablets"", ""quantity"": 1}]",169.96,shipped,2026-03-19,TRK662336,2026-03-20,
+ORD00067,PM0024,"[{""product_name"": ""Azithromycin 250mg"", ""quantity"": 1}, {""product_name"": ""Levothyroxine 100mcg"", ""quantity"": 2}]",547.15,returned,2026-03-18,TRK703766,2026-03-20,2026-03-20
+ORD00042,RV0013,"[{""product_name"": ""Glimepiride 2mg"", ""quantity"": 1}]",399.18,shipped,2026-03-16,TRK708792,2026-03-17,
+ORD00002,NZ0007,"[{""product_name"": ""Otomize Ear Spray"", ""quantity"": 3}, {""product_name"": ""Vitamin D3 60K IU"", ""quantity"": 1}, {""product_name"": ""Mupirocin Ointment 5g"", ""quantity"": 1}]",899.04,shipped,2026-03-15,TRK584714,2026-03-16,
+ORD00028,NZ0007,"[{""product_name"": ""Levocetrizine 5mg"", ""quantity"": 3}, {""product_name"": ""Doxycycline 100mg"", ""quantity"": 3}]",957.96,shipped,2026-03-15,TRK414569,2026-03-17,
+ORD00005,NZ0007,"[{""product_name"": ""Domperidone 10mg"", ""quantity"": 1}, {""product_name"": ""Vitamin C 1000mg"", ""quantity"": 1}, {""product_name"": ""Glimepiride 2mg"", ""quantity"": 3}]",1653.42,delivered,2026-03-14,TRK688637,2026-03-19,2026-03-20
+ORD00010,EN0027,"[{""product_name"": ""Vitamin D3 60K IU"", ""quantity"": 3}, {""product_name"": ""Mupirocin Ointment 5g"", ""quantity"": 1}]",521.7,shipped,2026-03-13,TRK728038,2026-03-15,
+ORD00044,RV0013,"[{""product_name"": ""Omeprazole 20mg"", ""quantity"": 1}]",57.76,returned,2026-03-09,TRK645175,2026-03-12,2026-03-13
+ORD00062,BJ0019,"[{""product_name"": ""Omeprazole 20mg"", ""quantity"": 1}, {""product_name"": ""Doxycycline 100mg"", ""quantity"": 1}, {""product_name"": ""Domperidone 10mg"", ""quantity"": 2}]",453.52,returned,2026-03-09,TRK497519,2026-03-11,2026-03-11
+ORD00024,ZN0026,"[{""product_name"": ""Insulin Syringes 1ml"", ""quantity"": 1}]",158.13,delivered,2026-03-08,TRK161324,2026-03-13,2026-03-13
+ORD00045,PF0030,"[{""product_name"": ""Nimesulide 100mg"", ""quantity"": 3}, {""product_name"": ""Telmisartan 40mg"", ""quantity"": 2}]",892.07,pending,2026-03-07,TRK795612,2026-03-11,
+ORD00072,ZN0026,"[{""product_name"": ""Levothyroxine 100mcg"", ""quantity"": 2}, {""product_name"": ""Glucometer Test Strips"", ""quantity"": 1}]",885.77,shipped,2026-03-07,TRK971084,2026-03-11,
+ORD00008,RK0015,"[{""product_name"": ""Ciprofloxacin 500mg"", ""quantity"": 3}, {""product_name"": ""Mupirocin Ointment 5g"", ""quantity"": 2}, {""product_name"": ""Glucometer Test Strips"", ""quantity"": 1}]",1193.49,delivered,2026-03-06,TRK407757,2026-03-10,2026-03-10
+ORD00026,KF0017,"[{""product_name"": ""Amoxicillin 500mg"", ""quantity"": 3}, {""product_name"": ""Multivitamin Tablets"", ""quantity"": 1}, {""product_name"": ""Nimesulide 100mg"", ""quantity"": 3}]",1181.43,pending,2026-03-06,TRK346629,2026-03-08,
+ORD00016,PO0003,"[{""product_name"": ""Lactulose Syrup 200ml"", ""quantity"": 1}, {""product_name"": ""Omega-3 Fish Oil"", ""quantity"": 3}, {""product_name"": ""Mupirocin Ointment 5g"", ""quantity"": 3}]",1574.3,pending,2026-03-05,TRK704201,2026-03-09,
+ORD00030,NZ0007,"[{""product_name"": ""Cetirizine 10mg"", ""quantity"": 1}]",63.43,cancelled,2026-03-05,TRK356150,2026-03-09,
+ORD00011,SR0011,"[{""product_name"": ""Amlodipine 5mg"", ""quantity"": 1}, {""product_name"": ""Metformin 500mg"", ""quantity"": 1}]",226.49,delivered,2026-03-04,TRK694916,2026-03-06,2026-03-06
+ORD00040,TR0028,"[{""product_name"": ""Cetirizine 10mg"", ""quantity"": 1}, {""product_name"": ""Amlodipine 5mg"", ""quantity"": 1}]",131.98,delivered,2026-03-03,TRK124813,2026-03-06,2026-03-06
+ORD00064,PO0003,"[{""product_name"": ""Zinc 50mg"", ""quantity"": 1}, {""product_name"": ""Sodium Chloride Eye Drops"", ""quantity"": 3}]",1173.24,delivered,2026-03-03,TRK142213,2026-03-05,2026-03-05
+ORD00066,IE0005,"[{""product_name"": ""Glimepiride 2mg"", ""quantity"": 1}, {""product_name"": ""Montelukast 10mg"", ""quantity"": 3}]",803.34,delivered,2026-03-03,TRK736745,2026-03-05,2026-03-05
+ORD00048,NZ0007,"[{""product_name"": ""Pantoprazole 40mg"", ""quantity"": 3}, {""product_name"": ""Omega-3 Fish Oil"", ""quantity"": 2}]",743.25,cancelled,2026-02-28,TRK932291,2026-03-04,
+ORD00047,NZ0007,"[{""product_name"": ""Levothyroxine 50mcg"", ""quantity"": 3}, {""product_name"": ""Amlodipine 5mg"", ""quantity"": 1}, {""product_name"": ""Levocetrizine 5mg"", ""quantity"": 2}]",772.49,delivered,2026-02-27,TRK400850,2026-03-04,2026-03-04
+ORD00059,NZ0007,"[{""product_name"": ""Loratadine 10mg"", ""quantity"": 2}, {""product_name"": ""ORS Sachets"", ""quantity"": 2}, {""product_name"": ""Paracetamol 500mg"", ""quantity"": 2}]",763.64,delivered,2026-02-27,TRK994905,2026-03-04,2026-03-04
+ORD00060,XL0029,"[{""product_name"": ""Glucometer Test Strips"", ""quantity"": 2}]",1108.74,shipped,2026-02-27,TRK609232,2026-03-03,
+ORD00004,SR0011,"[{""product_name"": ""Levothyroxine 50mcg"", ""quantity"": 3}]",403.62,delivered,2026-02-26,TRK429963,2026-03-02,2026-03-02
+ORD00023,CW0006,"[{""product_name"": ""Domperidone 10mg"", ""quantity"": 2}, {""product_name"": ""Insulin Syringes 1ml"", ""quantity"": 3}]",700.99,delivered,2026-02-25,TRK865990,2026-02-27,2026-02-28
+ORD00052,PD0023,"[{""product_name"": ""Vitamin C 1000mg"", ""quantity"": 3}]",1027.74,delivered,2026-02-25,TRK821024,2026-03-02,2026-03-03
+ORD00061,AH0001,"[{""product_name"": ""Vitamin D3 60K IU"", ""quantity"": 3}, {""product_name"": ""Domperidone 10mg"", ""quantity"": 3}, {""product_name"": ""Doxycycline 100mg"", ""quantity"": 1}]",856.28,delivered,2026-02-25,TRK513160,2026-03-01,2026-03-02
+ORD00068,TN0022,"[{""product_name"": ""Levothyroxine 100mcg"", ""quantity"": 3}]",497.1,shipped,2026-02-25,TRK970917,2026-02-27,
+ORD00036,EN0027,"[{""product_name"": ""Diclofenac Gel 30g"", ""quantity"": 2}]",209.24,delivered,2026-02-24,TRK482364,2026-02-27,2026-02-28
+ORD00070,TN0022,"[{""product_name"": ""Nasal Spray 10ml"", ""quantity"": 2}]",258.74,delivered,2026-02-24,TRK210665,2026-02-26,2026-02-27
+ORD00071,KB0014,"[{""product_name"": ""Multivitamin Tablets"", ""quantity"": 3}, {""product_name"": ""Betamethasone Cream 10g"", ""quantity"": 2}]",768.75,delivered,2026-02-24,TRK745830,2026-03-01,2026-03-01
+ORD00018,KB0014,"[{""product_name"": ""Aspirin 75mg"", ""quantity"": 3}, {""product_name"": ""Sodium Chloride Eye Drops"", ""quantity"": 1}]",524.82,shipped,2026-02-23,TRK163556,2026-02-27,
+ORD00057,UZ0009,"[{""product_name"": ""Amoxicillin 500mg"", ""quantity"": 1}, {""product_name"": ""Doxycycline 100mg"", ""quantity"": 2}, {""product_name"": ""Vitamin C 1000mg"", ""quantity"": 3}]",1592.79,cancelled,2026-02-22,TRK260227,2026-02-26,
+ORD00029,RK0015,"[{""product_name"": ""Tobramycin Eye Drops"", ""quantity"": 1}, {""product_name"": ""Levothyroxine 50mcg"", ""quantity"": 1}]",402.63,delivered,2026-02-21,TRK663750,2026-02-23,2026-02-23
+ORD00055,RC0020,"[{""product_name"": ""Pantoprazole 40mg"", ""quantity"": 2}, {""product_name"": ""Vitamin D3 60K IU"", ""quantity"": 2}, {""product_name"": ""ORS Sachets"", ""quantity"": 1}]",490.69,delivered,2026-02-21,TRK980660,2026-02-26,2026-02-27
+ORD00032,WD0018,"[{""product_name"": ""Ciprofloxacin 500mg"", ""quantity"": 3}, {""product_name"": ""Azithromycin 250mg"", ""quantity"": 3}]",937.41,delivered,2026-02-20,TRK262998,2026-02-22,2026-02-22
+ORD00031,SE0012,"[{""product_name"": ""Amlodipine 5mg"", ""quantity"": 3}, {""product_name"": ""Tobramycin Eye Drops"", ""quantity"": 1}, {""product_name"": ""Sodium Chloride Eye Drops"", ""quantity"": 3}]",1258.36,delivered,2026-02-19,TRK956795,2026-02-22,2026-02-23
+ORD00033,UZ0009,"[{""product_name"": ""Otomize Ear Spray"", ""quantity"": 2}]",405.88,delivered,2026-02-19,TRK629959,2026-02-22,2026-02-23
+ORD00003,RV0013,"[{""product_name"": ""Zinc 50mg"", ""quantity"": 1}]",388.62,delivered,2026-02-18,TRK944151,2026-02-21,2026-02-22
+ORD00056,HE0021,"[{""product_name"": ""Pantoprazole 40mg"", ""quantity"": 3}, {""product_name"": ""Nimesulide 100mg"", ""quantity"": 2}]",367.83,delivered,2026-02-18,TRK345884,2026-02-23,2026-02-23
+ORD00006,WD0018,"[{""product_name"": ""Zinc 50mg"", ""quantity"": 3}, {""product_name"": ""Doxycycline 100mg"", ""quantity"": 2}]",1504.18,shipped,2026-02-17,TRK195325,2026-02-21,
+ORD00034,GO0016,"[{""product_name"": ""Omeprazole 20mg"", ""quantity"": 1}, {""product_name"": ""Glucometer Test Strips"", ""quantity"": 2}, {""product_name"": ""Diclofenac Gel 30g"", ""quantity"": 1}]",1271.12,pending,2026-02-17,TRK768061,2026-02-19,
+ORD00014,FP0004,"[{""product_name"": ""Ibuprofen 400mg"", ""quantity"": 3}, {""product_name"": ""Levothyroxine 100mcg"", ""quantity"": 1}]",442.57,delivered,2026-02-16,TRK717024,2026-02-19,2026-02-19
+ORD00017,GO0016,"[{""product_name"": ""Azithromycin 250mg"", ""quantity"": 1}]",215.75,delivered,2026-02-16,TRK790993,2026-02-21,2026-02-22
+ORD00051,CK0002,"[{""product_name"": ""Nasal Spray 10ml"", ""quantity"": 3}, {""product_name"": ""Otomize Ear Spray"", ""quantity"": 1}]",591.05,delivered,2026-02-16,TRK853240,2026-02-21,2026-02-21
+ORD00069,HE0021,"[{""product_name"": ""Ciprofloxacin Eye Drops"", ""quantity"": 1}, {""product_name"": ""Ciprofloxacin 500mg"", ""quantity"": 2}, {""product_name"": ""Levothyroxine 50mcg"", ""quantity"": 3}]",801.34,delivered,2026-02-16,TRK549186,2026-02-18,2026-02-19
+ORD00013,KB0014,"[{""product_name"": ""Sodium Chloride Eye Drops"", ""quantity"": 2}, {""product_name"": ""Montelukast 10mg"", ""quantity"": 3}]",927.24,delivered,2026-02-14,TRK573417,2026-02-17,2026-02-18
+ORD00058,PD0023,"[{""product_name"": ""Telmisartan 40mg"", ""quantity"": 2}, {""product_name"": ""Mupirocin Ointment 5g"", ""quantity"": 2}]",831.08,shipped,2026-02-14,TRK165290,2026-02-18,
+ORD00063,SR0011,"[{""product_name"": ""Loratadine 10mg"", ""quantity"": 2}, {""product_name"": ""Glucometer Test Strips"", ""quantity"": 2}]",1245.06,delivered,2026-02-14,TRK975467,2026-02-19,2026-02-20
+ORD00041,TN0022,"[{""product_name"": ""Nimesulide 100mg"", ""quantity"": 2}, {""product_name"": ""Glucometer Test Strips"", ""quantity"": 3}]",1936.41,pending,2026-02-13,TRK634150,2026-02-17,
+ORD00039,AH0001,"[{""product_name"": ""Metformin 500mg"", ""quantity"": 3}, {""product_name"": ""Glucometer Test Strips"", ""quantity"": 1}, {""product_name"": ""Vitamin D3 60K IU"", ""quantity"": 2}]",1259.67,pending,2026-02-12,TRK140605,2026-02-17,
+ORD00009,KB0014,"[{""product_name"": ""Glimepiride 2mg"", ""quantity"": 3}, {""product_name"": ""Clotrimazole Cream 15g"", ""quantity"": 1}, {""product_name"": ""Multivitamin Tablets"", ""quantity"": 3}]",1669.72,delivered,2026-02-11,TRK412942,2026-02-16,2026-02-16
+ORD00035,UZ0009,"[{""product_name"": ""Paracetamol 500mg"", ""quantity"": 3}, {""product_name"": ""Ciprofloxacin 500mg"", ""quantity"": 1}, {""product_name"": ""Nimesulide 100mg"", ""quantity"": 3}]",859.08,delivered,2026-02-11,TRK137778,2026-02-16,2026-02-17
+ORD00020,RK0015,"[{""product_name"": ""Glucometer Test Strips"", ""quantity"": 2}]",1108.74,cancelled,2026-02-09,TRK361941,2026-02-14,
+ORD00027,RV0013,"[{""product_name"": ""Amoxicillin 500mg"", ""quantity"": 3}, {""product_name"": ""Nasal Spray 10ml"", ""quantity"": 3}, {""product_name"": ""Levothyroxine 100mcg"", ""quantity"": 2}]",1399.7,returned,2026-02-08,TRK373432,2026-02-11,2026-02-11
+ORD00046,TR0028,"[{""product_name"": ""Nasal Spray 10ml"", ""quantity"": 3}, {""product_name"": ""Atorvastatin 10mg"", ""quantity"": 2}, {""product_name"": ""Levocetrizine 5mg"", ""quantity"": 3}]",1449.35,delivered,2026-02-08,TRK233470,2026-02-12,2026-02-13
+ORD00001,TR0028,"[{""product_name"": ""Otomize Ear Spray"", ""quantity"": 1}, {""product_name"": ""Montelukast 10mg"", ""quantity"": 2}]",472.38,returned,2026-02-07,TRK472528,2026-02-12,2026-02-13
+ORD00012,PO0003,"[{""product_name"": ""Doxycycline 100mg"", ""quantity"": 1}, {""product_name"": ""ORS Sachets"", ""quantity"": 2}, {""product_name"": ""Sunscreen SPF 50 60ml"", ""quantity"": 3}]",1064.94,delivered,2026-02-06,TRK736059,2026-02-11,2026-02-11
+ORD00022,AH0001,"[{""product_name"": ""Lactulose Syrup 200ml"", ""quantity"": 1}, {""product_name"": ""ORS Sachets"", ""quantity"": 2}]",470.16,delivered,2026-02-06,TRK161483,2026-02-09,2026-02-09
+ORD00021,TR0028,"[{""product_name"": ""Sodium Chloride Eye Drops"", ""quantity"": 3}]",784.62,delivered,2026-02-05,TRK976638,2026-02-10,2026-02-10
+ORD00007,BW0025,"[{""product_name"": ""Vitamin D3 60K IU"", ""quantity"": 1}, {""product_name"": ""Omeprazole 20mg"", ""quantity"": 2}, {""product_name"": ""Ciprofloxacin Eye Drops"", ""quantity"": 2}]",639.82,pending,2026-02-04,TRK724834,2026-02-07,
+ORD00054,RK0015,"[{""product_name"": ""Doxycycline 100mg"", ""quantity"": 3}, {""product_name"": ""Domperidone 10mg"", ""quantity"": 3}]",847.38,delivered,2026-02-04,TRK686075,2026-02-07,2026-02-07
+ORD00043,UZ0009,"[{""product_name"": ""Atorvastatin 10mg"", ""quantity"": 3}, {""product_name"": ""Omeprazole 20mg"", ""quantity"": 3}]",1089.42,delivered,2026-02-03,TRK221263,2026-02-05,2026-02-06
+ORD00065,BW0025,"[{""product_name"": ""Tobramycin Eye Drops"", ""quantity"": 1}]",268.09,delivered,2026-02-02,TRK350132,2026-02-05,2026-02-05
+ORD00015,XJ0008,"[{""product_name"": ""Nimesulide 100mg"", ""quantity"": 1}]",136.65,delivered,2026-02-01,TRK446479,2026-02-03,2026-02-03

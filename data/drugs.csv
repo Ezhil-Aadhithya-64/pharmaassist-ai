@@ -1,0 +1,43 @@
+drug_id,drug_name,generic_name,category,manufacturer,unit_price_inr,stock_qty
+DRG001,Paracetamol 500mg,Paracetamol,Pain Relief,Cipla,117.47,496
+DRG002,Ibuprofen 400mg,Ibuprofen,Pain Relief,Torrent,92.29,53
+DRG003,Diclofenac Gel 30g,Diclofenac,Pain Relief,GSK,104.62,454
+DRG004,Aspirin 75mg,Aspirin,Heart Care,Abbott,87.76,430
+DRG005,Nimesulide 100mg,Nimesulide,Pain Relief,Abbott,136.65,413
+DRG006,Amoxicillin 500mg,Amoxicillin,Antibiotics,Abbott,226.73,356
+DRG007,Azithromycin 250mg,Azithromycin,Antibiotics,Torrent,215.75,80
+DRG008,Ciprofloxacin 500mg,Ciprofloxacin,Antibiotics,Mankind,96.72,221
+DRG009,Doxycycline 100mg,Doxycycline,Antibiotics,Dr. Reddy's,169.16,165
+DRG010,Vitamin C 1000mg,Ascorbic Acid,Vitamins,Mankind,342.58,437
+DRG011,Vitamin D3 60K IU,Cholecalciferol,Vitamins,Cipla,115.74,330
+DRG012,Multivitamin Tablets,Multivitamin,Vitamins,GSK,91.29,111
+DRG013,Calcium + D3 Tablets,Calcium + Vitamin D3,Vitamins,Lupin,169.96,110
+DRG014,Omega-3 Fish Oil,Omega-3,Vitamins,Dr. Reddy's,324.36,256
+DRG015,Zinc 50mg,Zinc,Vitamins,Abbott,388.62,480
+DRG016,Metformin 500mg,Metformin,Diabetes Care,Mankind,157.94,262
+DRG017,Glimepiride 2mg,Glimepiride,Diabetes Care,Dr. Reddy's,399.18,94
+DRG018,Glucometer Test Strips,,Diabetes Care,Mankind,554.37,316
+DRG019,Insulin Syringes 1ml,,Diabetes Care,Sun Pharma,158.13,225
+DRG020,Amlodipine 5mg,Amlodipine,Heart Care,Cipla,68.55,288
+DRG021,Atorvastatin 10mg,Atorvastatin,Heart Care,GSK,305.38,124
+DRG022,Telmisartan 40mg,Telmisartan,Heart Care,Torrent,241.06,244
+DRG023,Cetirizine 10mg,Cetirizine,Allergy & Cold,Cipla,63.43,72
+DRG024,Montelukast 10mg,Montelukast,Allergy & Cold,Cipla,134.72,70
+DRG025,Loratadine 10mg,Loratadine,Allergy & Cold,Torrent,68.16,288
+DRG026,Levocetrizine 5mg,Levocetirizine,Allergy & Cold,GSK,150.16,137
+DRG027,Nasal Spray 10ml,Xylometazoline,Allergy & Cold,Sun Pharma,129.37,370
+DRG028,Omeprazole 20mg,Omeprazole,Gastric Care,Torrent,57.76,269
+DRG029,Pantoprazole 40mg,Pantoprazole,Gastric Care,Cipla,31.51,316
+DRG030,Domperidone 10mg,Domperidone,Gastric Care,Lupin,113.3,149
+DRG031,ORS Sachets,ORS,Gastric Care,Abbott,196.19,441
+DRG032,Lactulose Syrup 200ml,Lactulose,Gastric Care,Torrent,77.78,69
+DRG033,Clotrimazole Cream 15g,Clotrimazole,Skin Care,GSK,198.31,476
+DRG034,Betamethasone Cream 10g,Betamethasone,Skin Care,Cipla,247.44,160
+DRG035,Mupirocin Ointment 5g,Mupirocin,Skin Care,Cipla,174.48,338
+DRG036,Sunscreen SPF 50 60ml,,Skin Care,Abbott,167.8,383
+DRG037,Levothyroxine 50mcg,Levothyroxine,Thyroid Care,GSK,134.54,328
+DRG038,Levothyroxine 100mcg,Levothyroxine,Thyroid Care,Mankind,165.7,490
+DRG039,Ciprofloxacin Eye Drops,Ciprofloxacin,Eye & Ear Care,Abbott,204.28,453
+DRG040,Tobramycin Eye Drops,Tobramycin,Eye & Ear Care,Cipla,268.09,108
+DRG041,Otomize Ear Spray,,Eye & Ear Care,Abbott,202.94,407
+DRG042,Sodium Chloride Eye Drops,Sodium Chloride,Eye & Ear Care,Abbott,261.54,473

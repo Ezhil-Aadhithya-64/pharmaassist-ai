@@ -1,0 +1,11 @@
+# ── Development / Streamlit UI ────────────────────────────────────────────────
+# Extends base.txt + api.txt
+# Install with: pip install -r requirements/base.txt -r requirements/api.txt -r requirements/dev.txt
+
+streamlit
+pandas
+
+# ── ML / HuggingFace (for local RAG embedding) ────────────────────────────────
+huggingface_hub
+transformers==4.33.2
+torch==2.1.0

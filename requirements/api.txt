@@ -1,0 +1,15 @@
+# ── Production API server (Railway deployment) ────────────────────────────────
+# Extends base.txt — install with: pip install -r requirements/base.txt -r requirements/api.txt
+
+fastapi==0.108.0
+uvicorn==0.23.2
+python-multipart
+
+# ── Speech-to-Text ────────────────────────────────────────────────────────────
+SpeechRecognition
+pydub
+
+# ── RAG (optional — omit on lean deployments) ─────────────────────────────────
+pymupdf
+chromadb
+sentence-transformers

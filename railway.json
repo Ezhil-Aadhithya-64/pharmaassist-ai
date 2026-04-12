@@ -1,0 +1,11 @@
+{
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "pip install -r requirements/api.txt"
+  },
+  "deploy": {
+    "startCommand": "uvicorn backend.api.routes:app --host 0.0.0.0 --port $PORT",
+    "healthcheckPath": "/health",
+    "restartPolicyType": "ON_FAILURE"
+  }
+}
