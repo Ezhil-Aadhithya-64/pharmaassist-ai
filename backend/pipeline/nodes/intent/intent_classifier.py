@@ -116,12 +116,13 @@ CRITICAL RULES:
 }"""
 
 
-def classify_intent(user_input: str, memory: list = None) -> dict:
+def classify_intent(user_input: str, memory: list = None, auth_customer_id: str = None) -> dict:
     """
     Classify intent from user_input.
     memory: list of {user, agent} dicts from AgentState — last 3 turns are
             injected into the prompt so the classifier can resolve references
             like "what is the tracking ID" after "track order ORD00008".
+    auth_customer_id: authenticated customer ID from session (None = admin/unauthenticated)
     """
     fallback = {
         "intent": "general_query",
@@ -208,7 +209,20 @@ def classify_intent(user_input: str, memory: list = None) -> dict:
                         pass
             product_updates = cleaned if cleaned else None
 
+    # ── Admin customer_id override ────────────────────────────────────────────
+    # CRITICAL: For admin users (auth_customer_id=None), only allow customer_id
+    # if it's explicitly mentioned in the CURRENT user input, not from memory/context.
+    # This prevents customer IDs from "sticking" across admin queries.
+    if auth_customer_id is None and customer_id is not None:
+        # Check if customer_id is explicitly in the current user input
+        if not _re.search(r'\b' + _re.escape(customer_id) + r'\b', user_input):
+            print(f"[intent_classifier] admin override: clearing customer_id={customer_id} (not in current input)")
+            customer_id = None
+
     # ── entity carryover from memory ──────────────────────────────────────────
+    # CRITICAL: Only carry over customer_id for authenticated customers, NOT for admins.
+    # Admins (auth_customer_id=None) should be able to query any customer without
+    # having previous customer IDs "stick" to their session.
     if memory and (order_id is None or customer_id is None):
         for turn in reversed(memory[-5:]):
             for text in (turn.get("user", ""), turn.get("agent", "")):
@@ -217,7 +231,8 @@ def classify_intent(user_input: str, memory: list = None) -> dict:
                     if m:
                         order_id = m.group(0).upper()
                         print(f"[intent_classifier] carried over order_id={order_id} from memory")
-                if customer_id is None:
+                # Only carry over customer_id if user is NOT an admin
+                if customer_id is None and auth_customer_id is not None:
                     m = _re.search(r'\b[A-Z]{2}\d{4}\b', text)
                     if m:
                         customer_id = m.group(0)
