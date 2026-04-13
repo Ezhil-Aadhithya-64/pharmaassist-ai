@@ -223,12 +223,16 @@ def modify_order(order_id: str, updated_products: List[dict]) -> dict:
                 if matched_key:
                     existing_map[matched_key]["quantity"] = qty
                 else:
+                    # Try to find the drug with fuzzy matching (partial name match)
                     cur.execute(
-                        "SELECT drug_name FROM drugs WHERE drug_name ILIKE %s LIMIT 1", (p_name,)
+                        "SELECT drug_name FROM drugs WHERE drug_name ILIKE %s LIMIT 1", (f"%{p_name}%",)
                     )
                     drug_row = cur.fetchone()
-                    canonical = drug_row["drug_name"] if drug_row else p_name
-                    existing_map[p_name.lower()] = {"product_name": canonical, "quantity": qty}
+                    if drug_row:
+                        canonical = drug_row["drug_name"]
+                        existing_map[canonical.lower()] = {"product_name": canonical, "quantity": qty}
+                    else:
+                        return {"status": "error", "data": {"message": f"Drug matching '{p_name}' not found in catalog"}}
 
             merged = list(existing_map.values())
 
