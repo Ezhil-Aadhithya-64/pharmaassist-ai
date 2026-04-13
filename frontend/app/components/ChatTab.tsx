@@ -255,7 +255,9 @@ export default function ChatTab({ messages, loading, agentInfo, sessionId, onSen
               <div key={k} style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
                 <span style={{ fontSize: 12, color: "#8e8ea0" }}>{k.replace(/_/g," ")}</span>
                 <span style={{ fontSize: 12, fontFamily: "monospace", color: "#10a37f",
-                  background: "rgba(16,163,127,0.1)", padding: "1px 6px", borderRadius: 4 }}>{v}</span>
+                  background: "rgba(16,163,127,0.1)", padding: "1px 6px", borderRadius: 4 }}>
+                  {typeof v === 'object' ? JSON.stringify(v) : v}
+                </span>
               </div>
             ))}
           </div>
