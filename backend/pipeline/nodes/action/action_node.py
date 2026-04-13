@@ -10,7 +10,7 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from backend.state.schema import AgentState
-from backend.core.security import validate_order_access, is_admin, normalize_order_id, find_similar_order_ids
+from backend.core.security import validate_order_access, is_admin, find_similar_order_ids
 from backend.tools.db_tools import (
     process_refund,
     cancel_order,
@@ -70,14 +70,6 @@ def action_node(state: AgentState) -> AgentState:
     session_id      = state.get("session_id", "unknown")
 
     auth_customer_id = state.get("customer_id")
-
-    # Normalize order ID format (ORD000039 -> ORD00039)
-    if order_id:
-        normalized_order_id = normalize_order_id(order_id)
-        if normalized_order_id != order_id:
-            print(f"[action_node] normalized order_id: {order_id} -> {normalized_order_id}")
-            order_id = normalized_order_id
-            entities["order_id"] = order_id
 
     print(f"[action_node] intent={intent} order_id={order_id} customer_id={customer_id} is_admin={is_admin(auth_customer_id)}")
 

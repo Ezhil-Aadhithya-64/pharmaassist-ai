@@ -4,7 +4,7 @@ Canonical location: backend/pipeline/nodes/system/tool_node.py
 """
 import re
 from backend.state.schema import AgentState
-from backend.core.security import validate_customer_access, validate_order_access, is_admin, normalize_order_id, find_similar_order_ids
+from backend.core.security import validate_customer_access, validate_order_access, is_admin, find_similar_order_ids
 from backend.tools.db_tools import (
     get_order_details,
     get_customer_profile,
@@ -38,14 +38,6 @@ def tool_node(state: AgentState) -> AgentState:
 
     # The authenticated customer from login — None means admin (full access)
     auth_customer_id = state.get("customer_id")
-    
-    # Normalize order ID format (ORD000039 -> ORD00039)
-    if order_id:
-        normalized_order_id = normalize_order_id(order_id)
-        if normalized_order_id != order_id:
-            print(f"[tool_node] normalized order_id: {order_id} -> {normalized_order_id}")
-            order_id = normalized_order_id
-            entities["order_id"] = order_id
     
     print(f"[tool_node] intent={intent} order_id={order_id} customer_id={customer_id} is_admin={is_admin(auth_customer_id)}")
 
