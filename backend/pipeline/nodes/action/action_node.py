@@ -10,7 +10,7 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from backend.state.schema import AgentState
-from backend.core.security import validate_order_access, is_admin
+from backend.core.security import validate_order_access, is_admin, normalize_order_id, find_similar_order_ids
 from backend.tools.db_tools import (
     process_refund,
     cancel_order,
@@ -70,6 +70,14 @@ def action_node(state: AgentState) -> AgentState:
     session_id      = state.get("session_id", "unknown")
 
     auth_customer_id = state.get("customer_id")
+
+    # Normalize order ID format (ORD000039 -> ORD00039)
+    if order_id:
+        normalized_order_id = normalize_order_id(order_id)
+        if normalized_order_id != order_id:
+            print(f"[action_node] normalized order_id: {order_id} -> {normalized_order_id}")
+            order_id = normalized_order_id
+            entities["order_id"] = order_id
 
     print(f"[action_node] intent={intent} order_id={order_id} customer_id={customer_id} is_admin={is_admin(auth_customer_id)}")
 
@@ -182,6 +190,24 @@ def action_node(state: AgentState) -> AgentState:
     final_tool   = primary_tool   if primary_tool   else (tool_calls[-1]["name"] if tool_calls else "")
 
     state["tool_result"] = final_result
+
+    # Handle order not found with helpful suggestions
+    if final_result.get("status") == "error":
+        error_msg = final_result.get("data", {}).get("message", "")
+        if "not found" in error_msg.lower() and order_id:
+            # Try to find similar order IDs
+            similar_ids = find_similar_order_ids(order_id, auth_customer_id)
+            if similar_ids:
+                suggestion = f"Order {order_id} not found. "
+                if len(similar_ids) == 1 and similar_ids[0] != order_id:
+                    suggestion += f"Did you mean {similar_ids[0]}?"
+                else:
+                    suggestion += f"Your recent orders: {', '.join(similar_ids[:3])}"
+                state["tool_result"] = {
+                    "status": "error",
+                    "data": {"message": suggestion}
+                }
+                print(f"[action_node] order not found, suggested: {similar_ids}")
 
     if not state.get("action_taken"):
         data         = final_result.get("data", {})

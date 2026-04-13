@@ -3,7 +3,82 @@ Security utilities for access control and audit logging.
 Canonical location: backend/core/security.py
 """
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List, Tuple
+
+
+def normalize_order_id(order_id: str) -> str:
+    """
+    Normalize order ID to standard format (ORD + 5 digits).
+    
+    Examples:
+        ORD000039 -> ORD00039
+        ORD39 -> ORD00039
+        ORD0039 -> ORD00039
+    
+    Args:
+        order_id: Raw order ID from user input
+    
+    Returns:
+        Normalized order ID in format ORDxxxxx
+    """
+    if not order_id:
+        return order_id
+    
+    # Extract just the numeric part
+    import re
+    match = re.search(r'ORD(\d+)', order_id, re.IGNORECASE)
+    if not match:
+        return order_id
+    
+    numeric_part = match.group(1)
+    
+    # Pad to 5 digits
+    normalized = f"ORD{int(numeric_part):05d}"
+    
+    return normalized
+
+
+def find_similar_order_ids(invalid_id: str, customer_id: Optional[str] = None) -> List[str]:
+    """
+    Find similar order IDs when an invalid ID is provided.
+    
+    Args:
+        invalid_id: The invalid order ID provided by user
+        customer_id: Optional customer ID to scope search
+    
+    Returns:
+        List of similar order IDs
+    """
+    try:
+        from backend.tools.db_tools import get_conn, release_conn
+        import psycopg2.extras
+        
+        # Try normalized version first
+        normalized = normalize_order_id(invalid_id)
+        
+        conn = get_conn()
+        try:
+            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+                if customer_id:
+                    # Search for similar IDs for this customer
+                    cur.execute(
+                        "SELECT order_id FROM orders WHERE customer_id = %s ORDER BY order_id DESC LIMIT 5",
+                        (customer_id,)
+                    )
+                else:
+                    # Try exact match with normalized ID
+                    cur.execute(
+                        "SELECT order_id FROM orders WHERE order_id = %s LIMIT 1",
+                        (normalized,)
+                    )
+                
+                results = [row["order_id"] for row in cur.fetchall()]
+                return results
+        finally:
+            release_conn(conn)
+    except Exception as e:
+        print(f"[find_similar_order_ids] error: {e}")
+        return []
 
 
 def log_access_denied(

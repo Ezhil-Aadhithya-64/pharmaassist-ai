@@ -4,7 +4,7 @@ Canonical location: backend/pipeline/nodes/system/tool_node.py
 """
 import re
 from backend.state.schema import AgentState
-from backend.core.security import validate_customer_access, validate_order_access, is_admin
+from backend.core.security import validate_customer_access, validate_order_access, is_admin, normalize_order_id, find_similar_order_ids
 from backend.tools.db_tools import (
     get_order_details,
     get_customer_profile,
@@ -38,6 +38,14 @@ def tool_node(state: AgentState) -> AgentState:
 
     # The authenticated customer from login — None means admin (full access)
     auth_customer_id = state.get("customer_id")
+    
+    # Normalize order ID format (ORD000039 -> ORD00039)
+    if order_id:
+        normalized_order_id = normalize_order_id(order_id)
+        if normalized_order_id != order_id:
+            print(f"[tool_node] normalized order_id: {order_id} -> {normalized_order_id}")
+            order_id = normalized_order_id
+            entities["order_id"] = order_id
     
     print(f"[tool_node] intent={intent} order_id={order_id} customer_id={customer_id} is_admin={is_admin(auth_customer_id)}")
 
@@ -125,6 +133,25 @@ def tool_node(state: AgentState) -> AgentState:
 
     else:
         result = {"status": "no_tool", "data": {}}
+
+    # Handle order/customer not found with helpful suggestions
+    if result.get("status") == "error":
+        error_msg = result.get("data", {}).get("message", "")
+        if "not found" in error_msg.lower():
+            if order_id and "order" in error_msg.lower():
+                # Try to find similar order IDs
+                similar_ids = find_similar_order_ids(order_id, auth_customer_id)
+                if similar_ids:
+                    suggestion = f"Order {order_id} not found. "
+                    if len(similar_ids) == 1 and similar_ids[0] != order_id:
+                        suggestion += f"Did you mean {similar_ids[0]}?"
+                    else:
+                        suggestion += f"Your recent orders: {', '.join(similar_ids[:3])}"
+                    result = {
+                        "status": "error",
+                        "data": {"message": suggestion}
+                    }
+                    print(f"[tool_node] order not found, suggested: {similar_ids}")
 
     state["tool_result"] = result
     print(f"[tool_node] status={result.get('status')} data={str(result.get('data',''))[:120]}")
