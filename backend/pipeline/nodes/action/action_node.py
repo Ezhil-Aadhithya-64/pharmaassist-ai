@@ -10,6 +10,7 @@ from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from backend.state.schema import AgentState
+from backend.core.security import validate_order_access, is_admin
 from backend.tools.db_tools import (
     process_refund,
     cancel_order,
@@ -66,13 +67,15 @@ def action_node(state: AgentState) -> AgentState:
     customer_id     = entities.get("customer_id", "")
     product_updates = entities.get("product_updates") or []
     user_input      = state.get("user_input", "")
+    session_id      = state.get("session_id", "unknown")
 
     auth_customer_id = state.get("customer_id")
 
-    print(f"[action_node] intent={intent} order_id={order_id} customer_id={customer_id}")
+    print(f"[action_node] intent={intent} order_id={order_id} customer_id={customer_id} is_admin={is_admin(auth_customer_id)}")
 
     # Ownership check for write actions on orders
-    if auth_customer_id and order_id:
+    # CRITICAL: Customers can only modify their own orders, admins can modify any
+    if not is_admin(auth_customer_id) and order_id:
         try:
             from backend.tools.db_tools import get_conn
             import psycopg2.extras
@@ -80,11 +83,19 @@ def action_node(state: AgentState) -> AgentState:
                 with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
                     cur.execute("SELECT customer_id FROM orders WHERE order_id = %s", (order_id,))
                     row = cur.fetchone()
-                    if row and row["customer_id"] != auth_customer_id:
-                        state["tool_result"]       = {"status": "access_denied", "data": {"message": f"Order {order_id} does not belong to your account."}}
-                        state["action_taken"]      = "none"
-                        state["resolution_status"] = "pending"
-                        return state
+                    if row:
+                        allowed, error_msg = validate_order_access(
+                            auth_customer_id=auth_customer_id,
+                            order_id=order_id,
+                            order_owner_id=row["customer_id"],
+                            action=f"modify_order_{intent}",
+                            session_id=session_id
+                        )
+                        if not allowed:
+                            state["tool_result"]       = {"status": "access_denied", "data": {"message": error_msg}}
+                            state["action_taken"]      = "none"
+                            state["resolution_status"] = "pending"
+                            return state
         except Exception as e:
             print(f"[action_node] ownership check error: {e}")
 

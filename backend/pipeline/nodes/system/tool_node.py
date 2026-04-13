@@ -4,6 +4,7 @@ Canonical location: backend/pipeline/nodes/system/tool_node.py
 """
 import re
 from backend.state.schema import AgentState
+from backend.core.security import validate_customer_access, validate_order_access, is_admin
 from backend.tools.db_tools import (
     get_order_details,
     get_customer_profile,
@@ -33,48 +34,75 @@ def tool_node(state: AgentState) -> AgentState:
     entities    = state.get("entities", {})
     order_id    = entities.get("order_id")
     customer_id = entities.get("customer_id")
+    session_id  = state.get("session_id", "unknown")
 
-    # The authenticated customer from login — None means admin (no restriction)
+    # The authenticated customer from login — None means admin (full access)
     auth_customer_id = state.get("customer_id")
-
-    print(f"[tool_node] intent={intent} order_id={order_id} customer_id={customer_id}")
+    
+    print(f"[tool_node] intent={intent} order_id={order_id} customer_id={customer_id} is_admin={is_admin(auth_customer_id)}")
 
     if intent == "track_order" and not order_id:
         state["tool_result"] = {"status": "missing_entity", "data": {"message": "Please provide your order ID."}}
         return state
 
+    # For customer-specific intents, enforce proper customer_id
     if intent in {"account_status", "order_history"} and not customer_id:
-        if auth_customer_id:
-            customer_id = auth_customer_id
-        else:
-            state["tool_result"] = {"status": "missing_entity", "data": {"message": "Please provide your customer ID."}}
+        if is_admin(auth_customer_id):
+            # Admin must explicitly specify which customer to query
+            state["tool_result"] = {"status": "missing_entity", "data": {"message": "Please provide a customer ID."}}
             return state
+        else:
+            # Customer users: auto-inject their own customer_id
+            customer_id = auth_customer_id
+            print(f"[tool_node] auto-injected customer_id={customer_id} for authenticated customer")
 
     if intent == "track_order":
         result = _call(get_order_details, order_id=order_id)
-        if auth_customer_id and result.get("status") == "success":
+        # Access control: customers can only view their own orders
+        if not is_admin(auth_customer_id) and result.get("status") == "success":
             order_owner = result["data"].get("customer_id")
-            if order_owner != auth_customer_id:
+            allowed, error_msg = validate_order_access(
+                auth_customer_id=auth_customer_id,
+                order_id=order_id,
+                order_owner_id=order_owner,
+                action="view_order",
+                session_id=session_id
+            )
+            if not allowed:
                 state["tool_result"] = {
                     "status": "access_denied",
-                    "data": {"message": f"Order {order_id} does not belong to your account."}
+                    "data": {"message": error_msg}
                 }
                 return state
 
     elif intent == "order_history":
-        if auth_customer_id and customer_id != auth_customer_id:
+        # Access control: customers can only view their own history
+        allowed, error_msg = validate_customer_access(
+            auth_customer_id=auth_customer_id,
+            target_customer_id=customer_id,
+            action="view_order_history",
+            session_id=session_id
+        )
+        if not allowed:
             state["tool_result"] = {
                 "status": "access_denied",
-                "data": {"message": "You can only view your own order history."}
+                "data": {"message": error_msg}
             }
             return state
         result = _call(get_order_history, customer_id=customer_id)
 
     elif intent == "account_status":
-        if auth_customer_id and customer_id != auth_customer_id:
+        # Access control: customers can only view their own account
+        allowed, error_msg = validate_customer_access(
+            auth_customer_id=auth_customer_id,
+            target_customer_id=customer_id,
+            action="view_customer_profile",
+            session_id=session_id
+        )
+        if not allowed:
             state["tool_result"] = {
                 "status": "access_denied",
-                "data": {"message": "You can only view your own account details."}
+                "data": {"message": error_msg}
             }
             return state
         result = _call(get_customer_profile, customer_id=customer_id)
