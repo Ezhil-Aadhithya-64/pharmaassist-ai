@@ -361,10 +361,18 @@ def modify_order(order_id: str, updated_products: List[dict]) -> dict:
                 else:
                     # Only add new products if quantity > 0
                     if qty > 0:
-                        # Try to find the drug with fuzzy matching (partial name match)
-                        cur.execute(
-                            "SELECT drug_name FROM drugs WHERE drug_name ILIKE %s LIMIT 1", (f"%{p_name}%",)
-                        )
+                        # Dynamic SQL: Try multiple matching strategies for drug names
+                        # 1. Exact partial match
+                        # 2. Match ignoring units (g/mg/ml/etc)
+                        # 3. Match just the drug name part
+                        cur.execute("""
+                            SELECT drug_name FROM drugs 
+                            WHERE drug_name ILIKE %s
+                               OR REGEXP_REPLACE(LOWER(drug_name), '[0-9]+(mg|g|ml|mcg|iu|units?)', '', 'g') 
+                                  ILIKE REGEXP_REPLACE(LOWER(%s), '[0-9]+(mg|g|ml|mcg|iu|units?)', '', 'g')
+                            LIMIT 1
+                        """, (f"%{p_name}%", p_name))
+                        
                         drug_row = cur.fetchone()
                         if drug_row:
                             canonical = drug_row["drug_name"]
