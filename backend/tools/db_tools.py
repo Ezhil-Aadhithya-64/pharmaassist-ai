@@ -202,7 +202,7 @@ def process_refund(order_id: str) -> dict:
             row = cur.fetchone()
             if not row:
                 return {"status": "error", "data": {"message": f"Order {order_id} not found"}}
-            status = (row["order_status"] or "").lower()
+            status = (row["order_status"] or "").strip().lower()
             if status not in REFUNDABLE:
                 return {"status": "rejected", "data": {
                     "message": f"Refund not applicable. Order {order_id} has status '{status}'. "
@@ -236,7 +236,7 @@ def cancel_order(order_id: str) -> dict:
             row = cur.fetchone()
             if not row:
                 return {"status": "error", "data": {"message": f"Order {order_id} not found"}}
-            status = (row["order_status"] or "").lower()
+            status = (row["order_status"] or "").strip().lower()
             if status not in CANCELLABLE:
                 return {"status": "rejected", "data": {
                     "message": f"Cannot cancel order {order_id}. Current status is '{status}'. "
@@ -284,18 +284,25 @@ def modify_order(order_id: str, updated_products: List[dict]) -> dict:
                 qty    = item.get("quantity", 1)
                 matched_key = next((k for k in existing_map if k == p_name.lower()), None)
                 if matched_key:
-                    existing_map[matched_key]["quantity"] = qty
-                else:
-                    # Try to find the drug with fuzzy matching (partial name match)
-                    cur.execute(
-                        "SELECT drug_name FROM drugs WHERE drug_name ILIKE %s LIMIT 1", (f"%{p_name}%",)
-                    )
-                    drug_row = cur.fetchone()
-                    if drug_row:
-                        canonical = drug_row["drug_name"]
-                        existing_map[canonical.lower()] = {"product_name": canonical, "quantity": qty}
+                    if qty == 0:
+                        # Remove product from order
+                        del existing_map[matched_key]
+                        print(f"[modify_order] removed {p_name} from order")
                     else:
-                        return {"status": "error", "data": {"message": f"Drug matching '{p_name}' not found in catalog"}}
+                        existing_map[matched_key]["quantity"] = qty
+                else:
+                    # Only add new products if quantity > 0
+                    if qty > 0:
+                        # Try to find the drug with fuzzy matching (partial name match)
+                        cur.execute(
+                            "SELECT drug_name FROM drugs WHERE drug_name ILIKE %s LIMIT 1", (f"%{p_name}%",)
+                        )
+                        drug_row = cur.fetchone()
+                        if drug_row:
+                            canonical = drug_row["drug_name"]
+                            existing_map[canonical.lower()] = {"product_name": canonical, "quantity": qty}
+                        else:
+                            return {"status": "error", "data": {"message": f"Drug matching '{p_name}' not found in catalog"}}
 
             merged = list(existing_map.values())
 
