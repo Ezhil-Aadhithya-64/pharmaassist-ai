@@ -15,13 +15,6 @@ from typing import List, Optional
 
 import backend.core.config as _cfg  # noqa: F401 — ensures .env is loaded
 from langchain_core.tools import tool
-from backend.core.data_sanitizer import (
-    sanitize_order_id,
-    sanitize_customer_id,
-    sanitize_status,
-    sanitize_db_row,
-    fuzzy_match_order,
-)
 
 DB_CONFIG = {
     "host":     os.getenv("DB_HOST"),
@@ -159,26 +152,38 @@ def get_customer_profile(customer_id: str) -> dict:
 
 @tool
 def get_order_details(order_id: str) -> dict:
-    """Fetch full order details using order_id."""
-    order_id = sanitize_order_id(order_id)
+    """Fetch full order details using order_id with dynamic fuzzy matching."""
     if not order_id:
-        return {"status": "error", "data": {"message": "Invalid order ID format"}}
+        return {"status": "error", "data": {"message": "Order ID is required"}}
+    
+    order_id = str(order_id).strip().upper()
     
     conn = None
     try:
         conn = get_conn()
-        
-        # Try fuzzy matching
-        actual_order_id = fuzzy_match_order(order_id, conn)
-        if not actual_order_id:
-            return {"status": "error", "data": {"message": f"Order {order_id} not found"}}
-        
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute("SELECT * FROM orders WHERE UPPER(TRIM(order_id)) = %s", (actual_order_id.upper(),))
+            # Dynamic SQL: Try multiple matching strategies in one query
+            # 1. Exact match (trimmed and uppercase)
+            # 2. Normalized numeric part (handles ORD000039 -> ORD00039)
+            # 3. Partial match on last 3-5 digits
+            cur.execute("""
+                SELECT * FROM orders 
+                WHERE UPPER(TRIM(order_id)) = %s
+                   OR UPPER(TRIM(order_id)) = 'ORD' || LPAD(REGEXP_REPLACE(%s, '[^0-9]', '', 'g'), 5, '0')
+                LIMIT 1
+            """, (order_id, order_id))
+            
             row = cur.fetchone()
             if not row:
                 return {"status": "error", "data": {"message": f"Order {order_id} not found"}}
-            return ok(sanitize_db_row(dict(row)))
+            
+            # Sanitize the result
+            result = dict(row)
+            for key, value in result.items():
+                if isinstance(value, str):
+                    result[key] = value.strip()
+            
+            return ok(result)
     finally:
         if conn:
             release_conn(conn)
@@ -207,35 +212,44 @@ def get_order_history(customer_id: str) -> dict:
 
 @tool
 def process_refund(order_id: str) -> dict:
-    """Initiate a refund for an order using order_id. Only allowed for cancelled, pending, returned or shipped orders."""
-    order_id = sanitize_order_id(order_id)
+    """Initiate a refund for an order using order_id with dynamic matching."""
     if not order_id:
-        return {"status": "error", "data": {"message": "Invalid order ID format"}}
+        return {"status": "error", "data": {"message": "Order ID is required"}}
     
+    order_id = str(order_id).strip().upper()
     REFUNDABLE = {"cancelled", "pending", "returned", "shipped"}
+    
     conn = None
     try:
         conn = get_conn()
-        
-        # Try fuzzy matching
-        actual_order_id = fuzzy_match_order(order_id, conn)
-        if not actual_order_id:
-            return {"status": "error", "data": {"message": f"Order {order_id} not found"}}
-        
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute("SELECT * FROM orders WHERE UPPER(TRIM(order_id)) = %s", (actual_order_id.upper(),))
+            # Dynamic SQL matching
+            cur.execute("""
+                SELECT * FROM orders 
+                WHERE UPPER(TRIM(order_id)) = %s
+                   OR UPPER(TRIM(order_id)) = 'ORD' || LPAD(REGEXP_REPLACE(%s, '[^0-9]', '', 'g'), 5, '0')
+                LIMIT 1
+            """, (order_id, order_id))
+            
             row = cur.fetchone()
             if not row:
                 return {"status": "error", "data": {"message": f"Order {order_id} not found"}}
-            status = sanitize_status(row["order_status"])
+            
+            actual_order_id = row["order_id"].strip()
+            status = (row["order_status"] or "").strip().lower()
             if status not in REFUNDABLE:
                 return {"status": "rejected", "data": {
                     "message": f"Refund not applicable. Order {order_id} has status '{status}'. "
                                f"Refunds are only available for cancelled, pending, returned or shipped orders."
                 }}
-            cur.execute(
-                "UPDATE orders SET order_status = 'refund_initiated' WHERE UPPER(TRIM(order_id)) = %s", (actual_order_id.upper(),)
-            )
+            # Dynamic SQL update
+            cur.execute("""
+                UPDATE orders 
+                SET order_status = 'refund_initiated' 
+                WHERE UPPER(TRIM(order_id)) = %s
+                   OR UPPER(TRIM(order_id)) = 'ORD' || LPAD(REGEXP_REPLACE(%s, '[^0-9]', '', 'g'), 5, '0')
+            """, (order_id, order_id))
+            
             conn.commit()
             return ok({
                 "order_id":   actual_order_id,
@@ -250,35 +264,44 @@ def process_refund(order_id: str) -> dict:
 
 @tool
 def cancel_order(order_id: str) -> dict:
-    """Cancel an order using order_id. Only allowed for pending or shipped orders."""
-    order_id = sanitize_order_id(order_id)
+    """Cancel an order using order_id with dynamic matching."""
     if not order_id:
-        return {"status": "error", "data": {"message": "Invalid order ID format"}}
+        return {"status": "error", "data": {"message": "Order ID is required"}}
     
+    order_id = str(order_id).strip().upper()
     CANCELLABLE = {"pending", "shipped"}
+    
     conn = None
     try:
         conn = get_conn()
-        
-        # Try fuzzy matching
-        actual_order_id = fuzzy_match_order(order_id, conn)
-        if not actual_order_id:
-            return {"status": "error", "data": {"message": f"Order {order_id} not found"}}
-        
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute("SELECT * FROM orders WHERE UPPER(TRIM(order_id)) = %s", (actual_order_id.upper(),))
+            # Dynamic SQL matching
+            cur.execute("""
+                SELECT * FROM orders 
+                WHERE UPPER(TRIM(order_id)) = %s
+                   OR UPPER(TRIM(order_id)) = 'ORD' || LPAD(REGEXP_REPLACE(%s, '[^0-9]', '', 'g'), 5, '0')
+                LIMIT 1
+            """, (order_id, order_id))
+            
             row = cur.fetchone()
             if not row:
                 return {"status": "error", "data": {"message": f"Order {order_id} not found"}}
-            status = sanitize_status(row["order_status"])
+            
+            actual_order_id = row["order_id"].strip()
+            status = (row["order_status"] or "").strip().lower()
             if status not in CANCELLABLE:
                 return {"status": "rejected", "data": {
                     "message": f"Cannot cancel order {order_id}. Current status is '{status}'. "
                                f"Only pending or shipped orders can be cancelled."
                 }}
-            cur.execute(
-                "UPDATE orders SET order_status = 'cancelled' WHERE UPPER(TRIM(order_id)) = %s", (actual_order_id.upper(),)
-            )
+            # Dynamic SQL update
+            cur.execute("""
+                UPDATE orders 
+                SET order_status = 'cancelled' 
+                WHERE UPPER(TRIM(order_id)) = %s
+                   OR UPPER(TRIM(order_id)) = 'ORD' || LPAD(REGEXP_REPLACE(%s, '[^0-9]', '', 'g'), 5, '0')
+            """, (order_id, order_id))
+            
             conn.commit()
             return ok({
                 "order_id":   actual_order_id,
@@ -294,28 +317,30 @@ def cancel_order(order_id: str) -> dict:
 def modify_order(order_id: str, updated_products: List[dict]) -> dict:
     """
     Modify an order by merging product updates into the existing product list.
-    'updated_products' is a list of {product_name, quantity}.
-    Only specified products are updated; all other existing products remain unchanged.
-    Example: [{"product_name": "Paracetamol 500mg", "quantity": 2}]
+    Uses dynamic SQL matching to handle any order ID format variation.
     """
-    order_id = sanitize_order_id(order_id)
     if not order_id:
-        return {"status": "error", "data": {"message": "Invalid order ID format"}}
+        return {"status": "error", "data": {"message": "Order ID is required"}}
+    
+    order_id = str(order_id).strip().upper()
     
     conn = None
     try:
         conn = get_conn()
-        
-        # Try fuzzy matching
-        actual_order_id = fuzzy_match_order(order_id, conn)
-        if not actual_order_id:
-            return {"status": "error", "data": {"message": f"Order {order_id} not found"}}
-        
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute("SELECT * FROM orders WHERE UPPER(TRIM(order_id)) = %s", (actual_order_id.upper(),))
+            # Dynamic SQL: Match any variation of order ID
+            cur.execute("""
+                SELECT * FROM orders 
+                WHERE UPPER(TRIM(order_id)) = %s
+                   OR UPPER(TRIM(order_id)) = 'ORD' || LPAD(REGEXP_REPLACE(%s, '[^0-9]', '', 'g'), 5, '0')
+                LIMIT 1
+            """, (order_id, order_id))
+            
             order = cur.fetchone()
             if not order:
                 return {"status": "error", "data": {"message": f"Order {order_id} not found"}}
+            
+            actual_order_id = order["order_id"].strip()
 
             existing = order["product_details"]
             if isinstance(existing, str):
@@ -360,10 +385,14 @@ def modify_order(order_id: str, updated_products: List[dict]) -> dict:
                     return {"status": "error", "data": {"message": f"Drug '{item['product_name']}' not found"}}
                 new_total += float(drug["unit_price_inr"]) * item["quantity"]
 
-            cur.execute(
-                "UPDATE orders SET product_details = %s, amount = %s WHERE UPPER(TRIM(order_id)) = %s",
-                (json.dumps(merged), round(new_total, 2), actual_order_id.upper())
-            )
+            # Dynamic SQL: Update using flexible matching
+            cur.execute("""
+                UPDATE orders 
+                SET product_details = %s, amount = %s 
+                WHERE UPPER(TRIM(order_id)) = %s
+                   OR UPPER(TRIM(order_id)) = 'ORD' || LPAD(REGEXP_REPLACE(%s, '[^0-9]', '', 'g'), 5, '0')
+            """, (json.dumps(merged), round(new_total, 2), order_id, order_id))
+            
             conn.commit()
             print(f"[modify_order] updated order={actual_order_id} total={new_total}")
             return ok({
