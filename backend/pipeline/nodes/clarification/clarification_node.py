@@ -27,6 +27,22 @@ def clarification_node(state: AgentState) -> AgentState:
     entities = dict(state.get("entities") or {})
     memory   = state.get("memory", [])
     label    = intent.replace("_", " ")
+    auth_customer_id = state.get("customer_id")  # None = admin
+
+    # ── Special case: Admin asking about their own customer ID ────────────────
+    # Admins don't have customer IDs, so redirect to a helpful response
+    if intent in _CUSTOMER_INTENTS and not entities.get("customer_id") and auth_customer_id is None:
+        user_input = state.get("user_input", "").lower()
+        if any(phrase in user_input for phrase in ["my customer", "my account", "who am i", "my id"]):
+            state["agent_response"] = (
+                "You're logged in as an administrator. Admin accounts don't have customer IDs. "
+                "If you need to look up a specific customer's information, please provide their "
+                "customer ID (e.g., AH0001, TR0028)."
+            )
+            state["tool_result"] = {}
+            state["resolution_status"] = "resolved"
+            print(f"[clarification_node] admin asked about own customer_id — provided explanation")
+            return state
 
     # ── try to recover missing entities from memory ───────────────────────────
     recovered = False
