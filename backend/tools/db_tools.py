@@ -11,7 +11,7 @@ import smtplib
 import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from typing import List
+from typing import List, Optional
 
 import backend.core.config as _cfg  # noqa: F401 — ensures .env is loaded
 from langchain_core.tools import tool
@@ -65,6 +65,69 @@ def release_conn(conn):
 
 def ok(data: dict) -> dict:
     return {"status": "success", "data": data}
+
+
+def normalize_order_id(order_id: str) -> Optional[str]:
+    """
+    Normalize and validate order ID format, with fuzzy matching for common typos.
+    
+    Expected format: ORDxxxxx (where xxxxx is 5 digits)
+    Common errors: ORD0000xx (extra zeros), ORDxxx (missing zeros)
+    
+    Returns normalized order_id or None if invalid format.
+    """
+    import re
+    
+    order_id = order_id.strip().upper()
+    
+    # Extract the numeric part
+    match = re.match(r'^ORD(\d+)$', order_id, re.IGNORECASE)
+    if not match:
+        return None
+    
+    numeric_part = match.group(1)
+    
+    # Normalize to 5 digits
+    if len(numeric_part) <= 5:
+        # Pad with leading zeros if too short
+        normalized = f"ORD{numeric_part.zfill(5)}"
+    else:
+        # Too many digits - try removing leading zeros
+        # ORD000039 -> ORD00039
+        numeric_part = numeric_part.lstrip('0') or '0'
+        if len(numeric_part) <= 5:
+            normalized = f"ORD{numeric_part.zfill(5)}"
+        else:
+            # Still too long, invalid
+            return None
+    
+    return normalized
+
+
+def find_order_fuzzy(order_id: str, conn) -> Optional[str]:
+    """
+    Try to find an order with fuzzy matching for common typos.
+    
+    Returns the actual order_id from database or None if not found.
+    """
+    # First try exact match
+    with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+        cur.execute("SELECT order_id FROM orders WHERE order_id = %s", (order_id,))
+        row = cur.fetchone()
+        if row:
+            return row["order_id"]
+    
+    # Try normalized version
+    normalized = normalize_order_id(order_id)
+    if normalized and normalized != order_id:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            cur.execute("SELECT order_id FROM orders WHERE order_id = %s", (normalized,))
+            row = cur.fetchone()
+            if row:
+                print(f"[find_order_fuzzy] normalized {order_id} -> {normalized}")
+                return row["order_id"]
+    
+    return None
 
 
 # ── RETRIEVAL TOOLS ────────────────────────────────────────────────────────────
