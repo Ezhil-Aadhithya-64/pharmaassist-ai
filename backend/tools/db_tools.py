@@ -237,9 +237,17 @@ def process_refund(order_id: str) -> dict:
             
             actual_order_id = row["order_id"].strip()
             status = (row["order_status"] or "").strip().lower()
+            
+            # Check if already refunded
+            if status == "refund_initiated":
+                return {"status": "rejected", "data": {
+                    "message": f"Refund for order {actual_order_id} has already been initiated. No further action needed."
+                }}
+            
+            # Check if refundable
             if status not in REFUNDABLE:
                 return {"status": "rejected", "data": {
-                    "message": f"Refund not applicable. Order {order_id} has status '{status}'. "
+                    "message": f"Refund not applicable for order {actual_order_id}. Current status is '{status}'. "
                                f"Refunds are only available for cancelled, pending, returned or shipped orders."
                 }}
             # Dynamic SQL update
@@ -289,9 +297,17 @@ def cancel_order(order_id: str) -> dict:
             
             actual_order_id = row["order_id"].strip()
             status = (row["order_status"] or "").strip().lower()
+            
+            # Check if already cancelled
+            if status == "cancelled":
+                return {"status": "rejected", "data": {
+                    "message": f"Order {actual_order_id} has already been cancelled. No further action needed."
+                }}
+            
+            # Check if cancellable
             if status not in CANCELLABLE:
                 return {"status": "rejected", "data": {
-                    "message": f"Cannot cancel order {order_id}. Current status is '{status}'. "
+                    "message": f"Cannot cancel order {actual_order_id}. Current status is '{status}'. "
                                f"Only pending or shipped orders can be cancelled."
                 }}
             # Dynamic SQL update
